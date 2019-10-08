@@ -9,6 +9,7 @@ import (
 	"text/template"
 )
 
+//NilTemplate 无用内容
 type NilTemplate struct {}
 
 //Init 初始化基本数据
