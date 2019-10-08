@@ -13,7 +13,7 @@ func setting() {
 	if len(args) != 2{
 		return
 	}
-	loadConfigFile(args[1])
+	loadConfigFile(args[0])
 	newSession()
 }
 

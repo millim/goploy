@@ -12,13 +12,18 @@ func main(){
 
 	args := goflag.Get()
 
-	if util.ArrayExists(&cmd.FirstArg, args[0]) {
-		cm := args[0]
+	if len(args) == 1 && args[0] == "init"{
+		cmd.Init()
+		return
+	}
+
+	if util.ArrayExists(&cmd.FirstArg, args[1]) {
+		cm := args[1]
 		switch cm {
 		case "init":
 			cmd.Init()
 			if len(args) == 2 {
-				cmd.Create(args[1])
+				cmd.Create(args[0])
 			}
 			break
 		case "install":
