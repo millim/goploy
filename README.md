@@ -19,7 +19,9 @@ goploy/local.json
 }
 ```
 `privateKey:` 本地的key文件，建议完整路径
+
 `localMainFile:` 指定要copy的文件（一般为编译后的上传文件)，建议完整路径
+
 `scriptFile:` 当执行deploy命令时，将会把完整的执行命令以sh文件放到此处
 
 goploy/DIRNAME/config.json
