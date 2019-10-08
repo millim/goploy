@@ -2,12 +2,14 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/millim/goploy/goflag"
 	"github.com/millim/goploy/lib/util"
 	"log"
 	"os"
 	"text/template"
 )
 
+//Create <----
 func Create(dirName string){
 	createConfigDir(dirName)
 	createConfigFile(dirName)
@@ -17,7 +19,7 @@ func Create(dirName string){
 
 
 func createConfigDir(dirName string){
-	fullPath := fmt.Sprintf("%s/%s", DefaultDir, dirName)
+	fullPath := fmt.Sprintf("%s/%s", goflag.DefaultDir, dirName)
 	if !util.FileExists(fullPath){
 		fmt.Fprintf(os.Stdout, "%s: %s\n", util.FontColor("Create dir"), fullPath)
 		os.MkdirAll(fullPath, os.ModePerm)
@@ -26,7 +28,7 @@ func createConfigDir(dirName string){
 
 
 func createConfigFile(dirName string){
-	fullPath := fmt.Sprintf("%s/%s/config.json", DefaultDir, dirName)
+	fullPath := fmt.Sprintf("%s/%s/config.json", goflag.DefaultDir, dirName)
 	if !util.FileExists(fullPath){
 		fmt.Fprintf(os.Stdout, "%s: %s\n", util.FontColor("Create file"), fullPath)
 		lf, err := os.OpenFile(fullPath, os.O_RDWR|os.O_CREATE, 0644)
@@ -50,7 +52,9 @@ func configTemplate() string{
   "sshPort": "",
   "serverDir": "",
   "serverFile": "",
-  "env": [],
-  "command": []
+	"needSudo": false,
+	"pidFile": "",
+	"env": ["GIN_MODE=release"],
+	"command": ["--port=6061"]
 }`
 }

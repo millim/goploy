@@ -2,6 +2,7 @@ package cmd
 
 
 
-var FirstArg = []string{"init","create"}
+//FirstArg can run args
+var FirstArg = []string{"init","install","deploy","start","stop","restart"}
 
 

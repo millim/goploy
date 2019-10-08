@@ -20,6 +20,6 @@
 *.iml
 out
 gen
-
+gop/*
 # dev file
 bin/*
