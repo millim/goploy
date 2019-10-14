@@ -44,6 +44,7 @@ func InstallMonitTo(){
 	session.ExecCmd(cmdMod)
 }
 
+//SetConfig 创建配置文件
 func SetConfig(){
 	serverConfig, localConfig = config.LoadConfigFile()
 	args := goflag.Get()
@@ -102,16 +103,13 @@ func getT() string {
 	return b.String()
 }
 
+//ConfigFileArgs 配置文件
 type ConfigFileArgs struct {
 	FileName string
 	User string
 	ScriptAddress string
 }
 
-//check host gla with address 10.173.167.240
-//	start program = "/bin/sh /home/deploy/scripts/run_gla.sh"
-//	as uid deploy and gid deploy
-//	if failed port 2233 protocol http  request "/api/ping" status 404 for 5 cycles then start
 func configTemplate()string{
 	s := make([]string,0)
 	s = append(s, `check host {{.User}} with address {MODIFY_HOST}`)

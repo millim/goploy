@@ -8,7 +8,7 @@ golang 单机部署用配置
 go install github.com/millim/goploy
 
 ### 命令说明
-`goploy init DIRNAME:` 项目中使用，初始化一套配置文件，其中有本地文件和服务器配置文件.
+`goploy DIRNAME init:` 项目中使用，初始化一套配置文件，其中有本地文件和服务器配置文件.
 
 goploy/local.json
 ```json
@@ -68,3 +68,12 @@ goploy/DIRNAME/config.json
 `goploy DIRNAME stop`    停止服务端文件
 
 `goploy DIRNAME restart` 重启服务端文件
+
+
+---
+
+`goploy DIRNAME monit-install` 安装monit
+
+`goploy DIRNAME monit-config CONFIG_NAME` 安装monit配置文件
+
+安装完成后，可以尝试使用 monit start all启动监控
