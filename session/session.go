@@ -1,8 +1,9 @@
-package deploy
+package session
 
 import (
 	"bufio"
 	"fmt"
+	"github.com/millim/goploy/config"
 	"golang.org/x/crypto/ssh"
 	"io/ioutil"
 	"log"
@@ -11,7 +12,15 @@ import (
 	"strings"
 )
 
+
+var session *ssh.Session
+var _client *ssh.Client
+var serverConfig *config.ServerConfig
+var localConfig *config.LocalConfig
+
+//NewSession link
 func newSession() {
+	serverConfig, localConfig = config.LoadConfigFile()
 
 	if serverConfig.SSHPort == "" {
 		serverConfig.SSHPort = "22"
@@ -36,8 +45,8 @@ func newSession() {
 		HostKeyCallback: ssh.FixedHostKey(hostKey),
 	}
 
-	client, _ = ssh.Dial("tcp", fmt.Sprintf("%s:%s", serverConfig.SSHHost, serverConfig.SSHPort), config)
-	session, _ = client.NewSession()
+	_client, _ = ssh.Dial("tcp", fmt.Sprintf("%s:%s", serverConfig.SSHHost, serverConfig.SSHPort), config)
+	session, _ = _client.NewSession()
 }
 
 
@@ -69,11 +78,31 @@ func getHostKey(host string) (ssh.PublicKey, error) {
 	return hostKey, nil
 }
 
-
-func execCmd(s string) error{
+//ExecCmd run
+func ExecCmd(s string) error{
+	client := getClient()
 	ns, _ := client.NewSession()
 	defer ns.Close()
 	ns.Stdout = os.Stdout
 	ns.Stderr = os.Stderr
 	return ns.Run(s)
+}
+
+//ExecCmdResponse get run response
+func ExecCmdResponse(s string) (string, error){
+	client := getClient()
+	ns, _ := client.NewSession()
+	defer ns.Close()
+	f, err := ns.Output(s)
+	if err != nil {
+		return "", err
+	}
+	return string(f), nil
+}
+
+func getClient() *ssh.Client{
+	if _client == nil {
+		newSession()
+	}
+	return _client
 }

@@ -2,19 +2,12 @@ package deploy
 
 import (
 	"fmt"
-	"github.com/millim/goploy/goflag"
-	"log"
+	"github.com/millim/goploy/config"
 	"strings"
 )
 
 func setting() {
-	args := goflag.Get()
-	log.Println(args)
-	if len(args) != 2{
-		return
-	}
-	loadConfigFile(args[0])
-	newSession()
+	serverConfig, localConfig = config.LoadConfigFile()
 }
 
 func runCmd() string {

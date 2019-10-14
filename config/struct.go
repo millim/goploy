@@ -1,4 +1,4 @@
-package deploy
+package config
 
 //ServerConfig 服务器端配置
 type ServerConfig struct {

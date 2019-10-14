@@ -2,23 +2,21 @@ package deploy
 
 import (
 	"fmt"
-	"golang.org/x/crypto/ssh"
-	"log"
+	"github.com/millim/goploy/config"
+	"github.com/millim/goploy/session"
 	"os/exec"
 	"strings"
 )
 
-var session *ssh.Session
-var client *ssh.Client
-var serverConfig ServerConfig
-var localConfig LocalConfig
+var serverConfig *config.ServerConfig
+var localConfig *config.LocalConfig
 
 //Deploy 部署文件
 func Deploy() {
 	setting()
 	deleteCmd := fmt.Sprintf("rm %s", mainFilePath())
 
-	err := execCmd(deleteCmd)
+	err := session.ExecCmd(deleteCmd)
 	if err != nil {
 		fmt.Println("rm error ->", err)
 	}
@@ -28,22 +26,22 @@ func Deploy() {
 		env = append(env, fmt.Sprintf("export %s", v))
 	}
 
-	err = execCmd(fmt.Sprintf(`echo -e "#! /bin/bash\n%s\n%s" > %s`, strings.Join(env, "\n"), runCmd(), localConfig.ScriptFile))
+	err = session.ExecCmd(fmt.Sprintf(`echo -e "#! /bin/bash\n%s\n%s" > %s`, strings.Join(env, "\n"), runCmd(), localConfig.ScriptFile))
 	if err != nil {
 		fmt.Println("copy scripts error ->", err)
 	}
-	log.Print(fmt.Sprintf("%s %s %s","scp", localConfig.LocalMainFile, fmt.Sprintf("%s@%s:%s", serverConfig.User, serverConfig.SSHHost, mainFilePath())))
-	cmd := exec.Command("scp", localConfig.LocalMainFile, fmt.Sprintf("%s@%s:%s", serverConfig.User, serverConfig.SSHHost, mainFilePath()))
+
+	var cmd *exec.Cmd
+	if serverConfig.SSHPort == "22" || serverConfig.SSHPort == ""{
+		cmd = exec.Command("scp", localConfig.LocalMainFile, fmt.Sprintf("%s@%s:%s", serverConfig.User, serverConfig.SSHHost, mainFilePath()))
+	}else{
+		cmd = exec.Command("scp","-P", serverConfig.SSHPort, localConfig.LocalMainFile, fmt.Sprintf("%s@%s:%s", serverConfig.User, serverConfig.SSHHost, mainFilePath()))
+	}
 	if err := cmd.Run(); err != nil {
 		fmt.Printf("cmd exec failed: %s", fmt.Sprint(err))
 	} else {
 		chmodCmd := fmt.Sprintf("chmod 777 %s", mainFilePath())
-		session2, _ := client.NewSession()
-		err := session2.Run(chmodCmd)
-		defer session2.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
+		session.ExecCmd(chmodCmd)
 		fmt.Println("done.")
 		fmt.Println("copy file to remote server finished!")
 	}

@@ -2,6 +2,7 @@ package deploy
 
 import (
 	"fmt"
+	"github.com/millim/goploy/session"
 	"log"
 )
 
@@ -13,11 +14,10 @@ func Stop() {
 		return
 	}
 	chmodCmd := fmt.Sprintf("kill `cat %s`", serverConfig.PidFile)
-	session, _ := client.NewSession()
-	defer session.Close()
-	if err := session.Run(chmodCmd); err != nil {
+	err := session.ExecCmd(chmodCmd)
+	if err != nil {
 		fmt.Println(err)
-	} else {
-		fmt.Println("file stop done!")
+		return
 	}
+	fmt.Println("file stop done!")
 }

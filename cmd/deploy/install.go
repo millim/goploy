@@ -1,12 +1,13 @@
 package deploy
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/millim/goploy/session"
+)
 
 //Install create dir
 func Install(){
 	setting()
-	defer session.Close()
-
-	execCmd(fmt.Sprintf("%s mkdir -p %s", sudo(), serverConfig.ServerDir))
-	execCmd(fmt.Sprintf("%schown -R %s %s", sudo(), serverConfig.User, serverConfig.ServerDir))
+	session.ExecCmd(fmt.Sprintf("%s mkdir -p %s", sudo(), serverConfig.ServerDir))
+	session.ExecCmd(fmt.Sprintf("%schown -R %s %s", sudo(), serverConfig.User, serverConfig.ServerDir))
 }
